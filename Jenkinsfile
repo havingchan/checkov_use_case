@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // You can set any environment variables here if needed, such as AWS credentials
+        // You can set any environment variables here if needed, such as AWS credentials, ..
     }
 
     stages {
