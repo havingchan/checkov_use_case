@@ -1,6 +1,6 @@
 provider "aws" {
   region = "us-west-2"
-  
+
 }
 
 terraform {
@@ -14,6 +14,13 @@ terraform {
   required_version = ">= 1.0"
 }
 
+resource "aws_flow_log" "example" {
+  iam_role_arn    = "arn"
+  log_destination = "log"
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.vpc.id
+}
+
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -21,29 +28,33 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-resource "aws_subnet" "subnet" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = "10.0.0.0/24"
-  tags = {
-    Name = "my-subnet"
-  }
-}
-
-resource "aws_security_group" "sg" {
+resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.vpc.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  
 }
 
-egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+#resource "aws_subnet" "subnet" {
+#  vpc_id     = aws_vpc.vpc.id
+#  cidr_block = "10.0.0.0/24"
+#  tags = {
+#    Name = "my-subnet"
+#  }
+#}
+#
+#resource "aws_security_group" "sg" {
+#  vpc_id = aws_vpc.vpc.id
+#
+#  ingress {
+#    from_port   = 22
+#    to_port     = 22
+#    protocol    = "tcp"
+#    cidr_blocks = ["0.0.0.0/0"]
+#  
+#}
+#
+#egress {
+#    from_port   = 0
+#    to_port     = 0
+#    protocol    = "-1"
+#    cidr_blocks = ["0.0.0.0/0"]
+#  }
+#}
