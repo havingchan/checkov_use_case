@@ -14,7 +14,7 @@ terraform {
   required_version = ">= 1.0"
 }
 
-resource "aws_flow_log" "example" {
+resource "aws_flow_log" "flow_log" {
   iam_role_arn    = "arn"
   log_destination = "log"
   traffic_type    = "ALL"
