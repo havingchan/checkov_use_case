@@ -48,6 +48,14 @@ resource "aws_subnet" "subnet2" {
     Name = "my-subnet2"
   }
 }
+
+resource "aws_subnet" "subnet3" {
+  vpc_id     = "vpc-084bc1c0ccdeac344"
+  cidr_block = "10.0.2.0/24"
+  tags = {
+    Name = "my-subnet3"
+  }
+}
 #
 #resource "aws_security_group" "sg" {
 #  vpc_id      = "vpc-084bc1c0ccdeac344"
