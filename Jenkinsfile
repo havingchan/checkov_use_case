@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     // Run Checkov on the directory with the Terraform main.tf file
-                    checkov -f main.tf --output junitxml > checkov_report.xml
+                    sh 'checkov -f main.tf --output junitxml > checkov_report.xml'
                 }
             }
         }
@@ -22,19 +22,13 @@ pipeline {
         // Stage 3: Publish the Checkov results in Jenkins
         stage('Publish Checkov Report') {
             steps {
-                // Publish the Checkov JUnit report
+                // Publish the Checkov JUnit report in Jenkins
                 junit 'checkov_report.xml'
             }
         }
 
-        // Stage 4: Run Terraform Init (Only if Checkov passes)
+        // Stage 4: Run Terraform Init
         stage('Terraform Init') {
-            when {
-                expression {
-                    // Proceed only if the Checkov scan passes (i.e., the build result is SUCCESS)
-                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
-                }
-            }
             steps {
                 script {
                     // Initialize the Terraform environment
@@ -43,14 +37,8 @@ pipeline {
             }
         }
 
-        // Stage 5: Run Terraform Apply (Only if Init and Plan succeed)
+        // Stage 5: Run Terraform Apply
         stage('Terraform Apply') {
-            when {
-                expression {
-                    // Apply only if the Checkov scan and terraform init succeeded
-                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
-                }
-            }
             steps {
                 script {
                     // Apply the Terraform configuration
