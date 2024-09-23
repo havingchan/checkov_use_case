@@ -33,11 +33,11 @@ terraform {
 #  vpc_id = aws_vpc.vpc.id
 #}
 #
-resource "aws_subnet" "subnet" {
+resource "aws_subnet" "subnet1" {
   vpc_id     = "vpc-084bc1c0ccdeac344"
   cidr_block = "10.0.0.0/24"
   tags = {
-    Name = "my-subnet"
+    Name = "my-subnet1"
   }
 }
 
