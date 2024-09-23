@@ -15,8 +15,8 @@ terraform {
 }
 
 resource "aws_flow_log" "flow_log" {
-  iam_role_arn    = "arn"
-  log_destination = "log"
+  iam_role_arn    = "arn:aws:iam::314338798034:role/havingwebappec2role"
+  log_destination = "arn:aws:logs:us-west-2:314338798034:log-group:flow-logs:log-stream:flow-log"
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.vpc.id
 }
