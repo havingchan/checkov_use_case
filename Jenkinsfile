@@ -1,13 +1,8 @@
 pipeline {
     agent any
 
-    environment {
-	region = "us-west1"
-        // You can set any environment variables here if needed, such as AWS credentials, ..
-    }
-
     stages {
-        // Stage 1: Checkout the Terraform code from the repository
+        // Stage 1: Checkout the Terraform code from the GitHub repository
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/havingchan/checkov_use_case.git'
@@ -18,8 +13,8 @@ pipeline {
         stage('Run Checkov Scan') {
             steps {
                 script {
-                    // Run Checkov on the directory with Terraform code
-                    sh 'checkov -d . -o junitxml > checkov_report.xml'
+                    // Run Checkov on the directory with the Terraform main.tf file
+                    sh 'checkov -f main.tf --output junitxml > checkov_report.xml'
                 }
             }
         }
@@ -27,15 +22,19 @@ pipeline {
         // Stage 3: Publish the Checkov results in Jenkins
         stage('Publish Checkov Report') {
             steps {
-                script {
-                    // Archive the report so Jenkins can display it
-                    junit 'checkov_report.xml'
-                }
+                // Publish the Checkov JUnit report
+                junit 'checkov_report.xml'
             }
         }
 
-        // Stage 4: Run Terraform Init (Optional)
+        // Stage 4: Run Terraform Init (Only if Checkov passes)
         stage('Terraform Init') {
+            when {
+                expression {
+                    // Proceed only if the Checkov scan passes (i.e., the build result is SUCCESS)
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
             steps {
                 script {
                     // Initialize the Terraform environment
@@ -44,29 +43,18 @@ pipeline {
             }
         }
 
-        // Stage 5: Run Terraform Plan
-        stage('Terraform Plan') {
-            steps {
-                script {
-                    // Generate a Terraform plan
-                    sh 'terraform plan -out=tfplan'
-                }
-            }
-        }
-
-        // Optional: Apply Terraform changes after Checkov scan passes
+        // Stage 5: Run Terraform Apply (Only if Init and Plan succeed)
         stage('Terraform Apply') {
             when {
                 expression {
-                    // You can use Checkov scan results to determine whether to proceed with the apply.
-                    // Example: Proceed only if Checkov report is clean.
+                    // Apply only if the Checkov scan and terraform init succeeded
                     currentBuild.result == null || currentBuild.result == 'SUCCESS'
                 }
             }
             steps {
                 script {
-                    // Apply the Terraform plan
-                    sh 'terraform apply -auto-approve tfplan'
+                    // Apply the Terraform configuration
+                    sh 'terraform apply -auto-approve'
                 }
             }
         }
@@ -74,8 +62,9 @@ pipeline {
 
     post {
         always {
-            // Always clean up resources, e.g., remove Terraform plans
+            // Clean up the workspace after the job completes
             cleanWs()
         }
     }
 }
+
