@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+	region = "us-west1"
         // You can set any environment variables here if needed, such as AWS credentials, ..
     }
 
