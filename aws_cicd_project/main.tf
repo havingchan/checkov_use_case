@@ -24,6 +24,9 @@ resource "aws_vpc" "vpc" {
 resource "aws_subnet" "subnet" {
   vpc_id     = aws_vpc.vpc.id
   cidr_block = "10.0.0.0/24"
+  tags = {
+    Name = "my-subnet"
+  }
 }
 
 resource "aws_security_group" "sg" {
