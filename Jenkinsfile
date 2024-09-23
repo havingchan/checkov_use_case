@@ -10,7 +10,7 @@ pipeline {
         // Stage 1: Checkout the Terraform code from the repository
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/havingchan/check_use_case.git'
+                git branch: 'main', url: 'https://github.com/havingchan/checkov_use_case.git'
             }
         }
 
