@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     // Run Checkov on the directory with the Terraform main.tf file
-                    sh 'checkov -f main.tf --output junitxml > checkov_report.xml'
+                    checkov -f main.tf --output junitxml > checkov_report.xml
                 }
             }
         }
