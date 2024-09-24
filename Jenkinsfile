@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    // agent {
+    //     label 'jenkins-agent-python'
+    // }
+
+    // triggers {
+    //     pollSCM('H/5 * * * *')
+    // }
+
     stages {
         // Stage 1: Checkout the Terraform code from the GitHub repository
         stage('Checkout Code') {
